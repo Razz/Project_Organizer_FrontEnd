@@ -30,6 +30,16 @@ app.use('/users', createProxyMiddleware({
   changeOrigin: true,
   logLevel: 'debug'
 }));
+app.use('/project_cards', createProxyMiddleware({
+  target: process.env.REACT_APP_USERS_URL,
+  changeOrigin: true,
+  logLevel: 'debug'
+}));
+app.use('/to_dos', createProxyMiddleware({
+  target: process.env.REACT_APP_USERS_URL,
+  changeOrigin: true,
+  logLevel: 'debug'
+}));
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });

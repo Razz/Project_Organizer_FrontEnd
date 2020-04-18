@@ -1,9 +1,11 @@
 import React from 'react';
+import { tracer } from '../Middleware/Tracing';
 
-const USER_URL = "http://localhost:3001/users"
+const USER_URL = '/users'
 
 class LogInForm extends React.Component {
     state = {
+      tracer,
         username: '',
         password: '',
         name: ''
@@ -14,6 +16,7 @@ class LogInForm extends React.Component {
     }
 
     handleSubmit = (e) => {
+      this.state.tracer.local('login_form_handleSubmit', () => {
         e.preventDefault()
         switch (this.props.userNorR) {
             case 'R':
@@ -37,6 +40,7 @@ class LogInForm extends React.Component {
                 .then(resp => resp.json())
                 .then(user => this.props.setUser(user))
         }
+      });
     }
 
     render(){
