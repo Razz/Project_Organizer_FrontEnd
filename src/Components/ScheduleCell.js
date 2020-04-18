@@ -1,7 +1,7 @@
 import React from 'react';
 
-const PROJCARD_URL = "http://localhost:3001/project_cards"
-const TO_DO_URL = "http://localhost:3001/to_dos"
+const PROJCARD_URL = "/project_cards"
+const TO_DO_URL = "/to_dos"
 
 class ScheduleCell extends React.Component{
     state = {
