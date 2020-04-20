@@ -4,16 +4,19 @@ import PageContainer from './Containers/PageContainer'
 import Nav from './Components/Nav'
 import WelcomePage from './Components/WelcomePage'
 import { tracer } from './Middleware/Tracing'
+import { logger } from './Middleware/Logging'
 
 class App extends React.Component {
   state = {
     loggedIn: false,
     tracer,
+    logger,
     user: {},
     view: 'projects'
   }
   
   componentDidMount(){
+    logger.info("App started. This should show up in Splunk.")
     const user_id = localStorage.user_id
     this.state.tracer.local('users', function() {
       if(user_id){
