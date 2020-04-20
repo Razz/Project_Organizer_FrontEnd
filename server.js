@@ -18,13 +18,18 @@ app.use(favicon(__dirname + '/build/favicon.ico'));
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(metricsMiddleware);
+app.use('/logging', createProxyMiddleware({
+  target: process.env.SPLUNK_URL,
+  changeOrigin: true,
+  logLevel: 'debug',
+  pathRewrite: { '^/logging': '/services/collector/event/1.0' }
+}));
 app.use('/tracing', createProxyMiddleware({
   target: process.env.REACT_APP_JAEGER_URL,
   changeOrigin: true,
   logLevel: 'debug',
   pathRewrite: { '^/tracing': '/api/v2/spans' }
 }));
-
 app.use('/users', createProxyMiddleware({
   target: process.env.REACT_APP_USERS_URL,
   changeOrigin: true,
