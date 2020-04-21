@@ -35,7 +35,7 @@ logger.__proto__.info = function(message) {
   this.log(message, 'info')
 }
 
-logger.__proto__.error = function(message) {
+logger.__proto__.errored = function(message) {
   this.log(message, 'error')
 }
 

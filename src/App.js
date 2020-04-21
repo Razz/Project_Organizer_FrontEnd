@@ -6,6 +6,31 @@ import WelcomePage from './Components/WelcomePage'
 import { tracer } from './Middleware/Tracing'
 import { logger } from './Middleware/Logging'
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, logger, tracer }
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error, errorInfo) {
+    logger.errored(`Something went wrong. Error: ${error}`);
+    logger.errored(errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <h1>Something went wrong.</h1>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 class App extends React.Component {
   state = {
     loggedIn: false,
@@ -64,11 +89,13 @@ class App extends React.Component {
   
   render(){
     return (
-      <div className="App">
-        <Nav loggedIn={this.state.loggedIn} user={this.state.user} handleNavClick={this.handleNavClick} logOut={this.logOut}/>
-        {this.state.loggedIn ? <PageContainer user={this.state.user} view={this.state.view}/> : <WelcomePage setUser={this.setUser}/>}
-        {/* <PageContainer user={this.state.user} view={this.state.view}/> */}
-      </div>
+      <ErrorBoundary>
+        <div className="App">
+          <Nav loggedIn={this.state.loggedIn} user={this.state.user} handleNavClick={this.handleNavClick} logOut={this.logOut}/>
+          {this.state.loggedIn ? <PageContainer user={this.state.user} view={this.state.view}/> : <WelcomePage setUser={this.setUser}/>}
+          {/* <PageContainer user={this.state.user} view={this.state.view}/> */}
+        </div>
+      </ErrorBoundary>
     );
   }
 }
