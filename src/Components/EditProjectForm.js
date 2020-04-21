@@ -1,7 +1,9 @@
 import React from 'react';
+import { tracer } from '../Middleware/Tracing'
 
 class EditProjectForm extends React.Component {
     state = {
+      tracer,
         name: this.props.project.name,
         logo: this.props.project.logo,
         description: this.props.project.description,
@@ -16,37 +18,41 @@ class EditProjectForm extends React.Component {
     };
 
     handleSubmit = (e) => {
-        e.preventDefault()
-        const data = {
-            name: this.state.name,
-            logo: this.state.logo,
-            description: this.state.description,
-            status: this.state.status,
-            repo_link: this.state.repoLink,
-            notes: this.state.notes,
-            color: this.state.color
-        }
-        fetch(`${this.props.url}/${this.props.project.id}`,{
-            method: 'PATCH',
-            headers: {
-                'content-type': 'application/json',
-                accept: 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(resp => resp.json())
-        .then(
-            this.props.updateProject(data),
-            this.props.toggleForm()
-        )
+      this.state.tracer.local('edit_project_handleSubmit', () => {
+          e.preventDefault()
+          const data = {
+              name: this.state.name,
+              logo: this.state.logo,
+              description: this.state.description,
+              status: this.state.status,
+              repo_link: this.state.repoLink,
+              notes: this.state.notes,
+              color: this.state.color
+          }
+          fetch(`${this.props.url}/${this.props.project.id}`,{
+              method: 'PATCH',
+              headers: {
+                  'content-type': 'application/json',
+                  accept: 'application/json'
+              },
+              body: JSON.stringify(data)
+          })
+          .then(resp => resp.json())
+          .then(
+              this.props.updateProject(data),
+              this.props.toggleForm()
+          )
+      });
     }
 
     deleteProject = () => {
+      this.state.tracer.local('delete_project', () => {
         fetch(`${this.props.url}/${this.props.project.id}`,{method: 'DELETE'})
         .then(
             this.props.removeProject(this.props.project.id),
             this.props.toggleForm()
         )
+      });
     }
 
     render(){
