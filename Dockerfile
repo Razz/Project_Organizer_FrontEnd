@@ -1,4 +1,4 @@
-FROM carlosnunez/sre_wa_frontend
+FROM carlosnunez/sre_wa_frontend:base
 MAINTAINER Carlos Nunez <dev@carlosnunez.me>
 
 COPY . /app
