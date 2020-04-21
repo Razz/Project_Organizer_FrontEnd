@@ -1,5 +1,6 @@
 import React from 'react';
 import ToDoForm from './ToDoForm'
+import { ErrorHandler} from 'universal-react-logger';
 
 const TO_DO_URL = "http://localhost:3001/to_dos"
 
@@ -95,5 +96,6 @@ class ProjectCard extends React.Component{
   }
 }
 
-export default ProjectCard;
+
+export default ErrorHandler(ProjectCard, true);
   

@@ -1,7 +1,25 @@
 import React from 'react';
+import { Tracer, ExplicitContext, BatchRecorder, jsonEncoder, Annotation } from 'zipkin';
+import { HttpLogger } from 'zipkin-transport-http';
+import wrapFetch from 'zipkin-instrumentation-fetch';
+const { JSON_V2 } = jsonEncoder
+
+const tracer = new Tracer({
+  ctxImpl: new ExplicitContext(),
+  recorder: new BatchRecorder({
+    logger: new HttpLogger({
+      endpoint: '/tracing',
+      jsonEncoder: JSON_V2,
+      fetch,
+    }),
+  }),
+  localServiceName: 'sre-webinar-app-frontend',
+});
+
 
 class NewProjectForm extends React.Component {
     state = {
+      tracer,
         name: '',
         logo: '',
         description: '',
@@ -16,6 +34,7 @@ class NewProjectForm extends React.Component {
     };
 
     handleSubmit = (e) => {
+      this.state.tracer.local('new_project_handleSubmit', () => {
         e.preventDefault()
         const data = {
             name: this.state.name,
@@ -40,6 +59,7 @@ class NewProjectForm extends React.Component {
             this.props.showNewProject(data),
             this.props.toggleForm()
         )
+      });
     }
 
     render(){

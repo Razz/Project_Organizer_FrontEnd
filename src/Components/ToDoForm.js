@@ -1,7 +1,9 @@
 import React from 'react';
+import { tracer } from '../Middleware/Tracing'
 
 class ToDoForm extends React.Component {
     state = {
+      tracer,
         scheduling: false,
         description: '',
         date: '',
@@ -18,6 +20,7 @@ class ToDoForm extends React.Component {
     }
 
     handleSubmit = (e) => {
+      this.state.tracer.local('todo_form_handleSubmit', () => {
         e.preventDefault()
         const data = {
             description: this.state.description,
@@ -40,6 +43,7 @@ class ToDoForm extends React.Component {
             this.props.addToDo(data),
             this.props.toggleForm()
         )
+      });
     }
 
     render(){
